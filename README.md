@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: lock issue
-        uses: pansong291/issue-interceptor-action@v1.0
+        uses: pansong291/issue-interceptor-action@v1.0.1
         with:
           test-regex: '/shite/i'
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: delete comment
-        uses: pansong291/issue-interceptor-action@v1.0
+        uses: pansong291/issue-interceptor-action@v1.0.1
         with:
           test-regex: '/shite/i'
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: lock issue and delete comment
-        uses: pansong291/issue-interceptor-action@v1.0
+        uses: pansong291/issue-interceptor-action@v1.0.1
         with:
           test-regex: '/shite/i'
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: lock issue and delete comment
-        uses: pansong291/issue-interceptor-action@v1.0
+        uses: pansong291/issue-interceptor-action@v1.0.1
         with:
           test-regex: '/shite/i'
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: lock issue and delete comment
-        uses: pansong291/issue-interceptor-action@v1.0
+        uses: pansong291/issue-interceptor-action@v1.0.1
         with:
           test-regex: '/shite/i'
           token: ${{ secrets.GITHUB_TOKEN }}
