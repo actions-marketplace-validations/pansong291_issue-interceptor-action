@@ -12496,13 +12496,14 @@ class AbstractInterceptor {
     getComment() {
         return this.getIssue() + `.comment#${this.comment_id}`;
     }
-    initPayload(payload) {
-        var _a, _b, _c, _d;
-        this.payload = payload;
-        this.owner = (_a = payload.repository) === null || _a === void 0 ? void 0 : _a.owner.login;
-        this.repo = (_b = payload.repository) === null || _b === void 0 ? void 0 : _b.name;
-        this.issue_number = (_c = payload.issue) === null || _c === void 0 ? void 0 : _c.number;
-        this.comment_id = (_d = payload.comment) === null || _d === void 0 ? void 0 : _d.id;
+    init(context) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        this.payload = context.payload;
+        this.owner = ((_a = context.repo) === null || _a === void 0 ? void 0 : _a.owner) || ((_d = (_c = (_b = context.payload) === null || _b === void 0 ? void 0 : _b.repository) === null || _c === void 0 ? void 0 : _c.owner) === null || _d === void 0 ? void 0 : _d.login);
+        this.repo = ((_e = context.repo) === null || _e === void 0 ? void 0 : _e.repo) || ((_g = (_f = context.payload) === null || _f === void 0 ? void 0 : _f.repository) === null || _g === void 0 ? void 0 : _g.name);
+        this.issue_number = ((_h = context.issue) === null || _h === void 0 ? void 0 : _h.number) || ((_k = (_j = context.payload) === null || _j === void 0 ? void 0 : _j.issue) === null || _k === void 0 ? void 0 : _k.number);
+        this.comment_id = (_m = (_l = context.payload) === null || _l === void 0 ? void 0 : _l.comment) === null || _m === void 0 ? void 0 : _m.id;
+        core.info(`[init ${this.eventName}] owner: ${this.owner}, repo: ${this.repo}`);
     }
 }
 exports["default"] = AbstractInterceptor;
@@ -12575,7 +12576,8 @@ exports["default"] = new CommentInterceptor();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const issue_interceptor_1 = __nccwpck_require__(217);
 const comment_interceptor_1 = __nccwpck_require__(2050);
-const interceptors = [issue_interceptor_1.default, comment_interceptor_1.default];
+const workflow_dispatch_interceptor_1 = __nccwpck_require__(123);
+const interceptors = [issue_interceptor_1.default, comment_interceptor_1.default, workflow_dispatch_interceptor_1.default];
 const interceptorMap = (function () {
     const map = {};
     for (let interceptor of interceptors) {
@@ -12587,7 +12589,7 @@ function getInterceptor(event) {
     const interceptor = interceptorMap[event.eventName];
     if (!interceptor)
         throw `Unsupported event '${event.eventName}'`;
-    interceptor.initPayload(event.payload);
+    interceptor.init(event);
     return interceptor;
 }
 exports["default"] = getInterceptor;
@@ -12679,6 +12681,125 @@ class IssueInterceptor extends abstract_interceptor_1.default {
     }
 }
 exports["default"] = new IssueInterceptor();
+
+
+/***/ }),
+
+/***/ 123:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __nccwpck_require__(2186);
+const abstract_interceptor_1 = __nccwpck_require__(6654);
+const issue_interceptor_1 = __nccwpck_require__(217);
+const comment_interceptor_1 = __nccwpck_require__(2050);
+const util_1 = __nccwpck_require__(9604);
+class workflowDispatchInterceptor extends abstract_interceptor_1.default {
+    constructor() {
+        super(...arguments);
+        this.eventName = 'workflow_dispatch';
+    }
+    intercept() {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info('start to get all issues...');
+            (0, util_1.assertNotEmpty)(this.owner, this.repo);
+            yield this.forEachElem(void 0, (params) => this.octokit.issues.listForRepo(params), (elem) => __awaiter(this, void 0, void 0, function* () {
+                /**
+                 * Note: GitHub's REST API v3 considers every pull request an issue, but not every issue is a pull request.
+                 * For this reason, "Issues" endpoints may return both issues and pull requests in the response.
+                 * You can identify pull requests by the pull_request key.
+                 */
+                if (!elem.pull_request) {
+                    const context = this.newContext(elem);
+                    yield this.checkIssue(context, elem);
+                }
+                else {
+                    core.info(`ignore pull requests #${elem.number}`);
+                }
+            }));
+        });
+    }
+    checkIssue(context, issue) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const issue_number = context.payload.issue.number;
+            if (issue_number) {
+                core.info(`start to get all comments by issue#${issue_number}`);
+                yield this.forEachElem({ issue_number }, (params) => this.octokit.issues.listComments(params), (elem) => __awaiter(this, void 0, void 0, function* () {
+                    const context = this.newContext(issue, elem);
+                    yield this.checkComment(context);
+                }));
+            }
+            issue_interceptor_1.default.init(context);
+            yield issue_interceptor_1.default.intercept();
+        });
+    }
+    forEachElem(params, fetch, consumer) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const _params = Object.assign({}, params, {
+                owner: this.owner,
+                repo: this.repo,
+                per_page: 100,
+                page: 1
+            });
+            while (true) {
+                const { data } = yield fetch.call(this, _params);
+                if (data === null || data === void 0 ? void 0 : data.length) {
+                    for (const elem of data) {
+                        try {
+                            consumer.call(this, elem);
+                        }
+                        catch (e) {
+                            core.warning(e);
+                        }
+                    }
+                }
+                else {
+                    break;
+                }
+                _params.page++;
+            }
+        });
+    }
+    checkComment(context) {
+        return __awaiter(this, void 0, void 0, function* () {
+            comment_interceptor_1.default.init(context);
+            yield comment_interceptor_1.default.intercept();
+        });
+    }
+    newContext(issue, comment) {
+        return {
+            payload: {
+                repository: {
+                    name: this.repo,
+                    owner: {
+                        login: this.owner
+                    }
+                },
+                issue: {
+                    number: issue === null || issue === void 0 ? void 0 : issue.number,
+                    title: issue === null || issue === void 0 ? void 0 : issue.title,
+                    body: issue === null || issue === void 0 ? void 0 : issue.body
+                },
+                comment: {
+                    id: comment === null || comment === void 0 ? void 0 : comment.id,
+                    body: comment === null || comment === void 0 ? void 0 : comment.body
+                }
+            }
+        };
+    }
+}
+exports["default"] = new workflowDispatchInterceptor();
 
 
 /***/ }),

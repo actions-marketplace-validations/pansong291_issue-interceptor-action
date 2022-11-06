@@ -3,6 +3,7 @@ import { GithubEventInterceptor } from './types'
 import { WebhookPayload } from '@actions/github/lib/interfaces'
 import { Octokit } from '@octokit/rest'
 import { Inputs } from '../types'
+import { Context } from '@actions/github/lib/context'
 
 export default abstract class AbstractInterceptor implements GithubEventInterceptor {
   protected payload?: WebhookPayload
@@ -38,12 +39,13 @@ export default abstract class AbstractInterceptor implements GithubEventIntercep
     return this.getIssue() + `.comment#${this.comment_id}`
   }
 
-  initPayload(payload: WebhookPayload): void {
-    this.payload = payload
-    this.owner = payload.repository?.owner.login
-    this.repo = payload.repository?.name
-    this.issue_number = payload.issue?.number
-    this.comment_id = payload.comment?.id
+  init(context: Context): void {
+    this.payload = context.payload
+    this.owner = context.repo?.owner || context.payload?.repository?.owner?.login
+    this.repo = context.repo?.repo || context.payload?.repository?.name
+    this.issue_number = context.issue?.number || context.payload?.issue?.number
+    this.comment_id = context.payload?.comment?.id
+    core.info(`[init ${this.eventName}] owner: ${this.owner}, repo: ${this.repo}`)
   }
 
   abstract eventName: string

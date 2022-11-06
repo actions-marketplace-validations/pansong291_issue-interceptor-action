@@ -1,7 +1,7 @@
-import { WebhookPayload } from '@actions/github/lib/interfaces'
+import { Context } from '@actions/github/lib/context'
 
 export interface GithubEventInterceptor {
   eventName: string
-  initPayload: (payload: WebhookPayload) => void
+  init: (context: Context) => void
   intercept: () => Promise<void>
 }

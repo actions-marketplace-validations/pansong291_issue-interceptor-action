@@ -1,10 +1,10 @@
 name: Lock Issue And Delete Comment
 
 on:
-  issues:
-    types: [opened, edited, reopened]
-  issue_comment:
-    types: [created, edited]
+#  issues:
+#    types: [opened, edited, reopened]
+#  issue_comment:
+#    types: [created, edited]
   workflow_dispatch:
 
 jobs:
