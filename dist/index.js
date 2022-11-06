@@ -12714,7 +12714,7 @@ class workflowDispatchInterceptor extends abstract_interceptor_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             core.info('start to get all issues...');
             (0, util_1.assertNotEmpty)(this.owner, this.repo);
-            yield this.forEachElem(void 0, (params) => this.octokit.issues.listForRepo(params), (elem) => __awaiter(this, void 0, void 0, function* () {
+            yield this.forEachElem({ state: 'all' }, (params) => this.octokit.issues.listForRepo(params), (elem) => __awaiter(this, void 0, void 0, function* () {
                 /**
                  * Note: GitHub's REST API v3 considers every pull request an issue, but not every issue is a pull request.
                  * For this reason, "Issues" endpoints may return both issues and pull requests in the response.

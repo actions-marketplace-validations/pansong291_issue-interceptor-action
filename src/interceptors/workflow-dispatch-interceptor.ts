@@ -12,7 +12,7 @@ class workflowDispatchInterceptor extends AbstractInterceptor {
     core.info('start to get all issues...')
     assertNotEmpty(this.owner, this.repo)
     await this.forEachElem(
-      void 0,
+      { state: 'all' },
       (params) => this.octokit.issues.listForRepo(params),
       async (elem) => {
         /**
