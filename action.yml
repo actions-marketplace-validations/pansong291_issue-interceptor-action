@@ -1,0 +1,25 @@
+name: 'Issue Interceptor'
+description: 'Intercept issues and comments based on regex matching'
+author: 'paso'
+
+# https://actions-cool.github.io/github-action-branding/
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  test-regex:
+    description: 'The regex expression to test title or body of the issue or comment.'
+    required: true
+  token:
+    description: 'Github token'
+    default: ${{ github.token }}
+  title-override:
+    description: 'Reset the title of the issue.'
+  body-override:
+    description: 'Reset the body of the issue or comment.'
+  lock-reason:
+    description: 'The reason for locking the issue conversation.'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
