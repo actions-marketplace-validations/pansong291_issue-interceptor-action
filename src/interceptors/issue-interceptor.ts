@@ -34,7 +34,7 @@ class IssueInterceptor extends AbstractInterceptor {
       repo: this.repo,
       issue_number: this.issue_number,
       state: 'closed',
-      state_reason: '',
+      state_reason: 'completed',
       title,
       body
     }

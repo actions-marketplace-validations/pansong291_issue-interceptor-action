@@ -12650,7 +12650,7 @@ class IssueInterceptor extends abstract_interceptor_1.default {
                 repo: this.repo,
                 issue_number: this.issue_number,
                 state: 'closed',
-                state_reason: '',
+                state_reason: 'completed',
                 title,
                 body
             };
