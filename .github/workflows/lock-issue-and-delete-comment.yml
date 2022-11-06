@@ -1,0 +1,20 @@
+name: Lock Issue And Delete Comment
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  lock-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: lock issue and delete comment
+        uses: ./
+        with:
+          test-regex: '/shite|fuck|bitch|test/i'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title-override: 'xxx'
+          body-override: 'xxx'
+          lock-reason: 'spam'
