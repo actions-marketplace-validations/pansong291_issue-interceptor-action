@@ -15,7 +15,7 @@ jobs:
       - name: lock issue and delete comment
         uses: ./
         with:
-          test-regex: '/\b(shite|fuck|bitch|test)\b/i'
+          test-regex: ${{ secrets.REGEX_ISSUE_INTERCEPTOR }}
           token: ${{ secrets.GITHUB_TOKEN }}
           title-override: 'xxx'
           body-override: 'xxx'
