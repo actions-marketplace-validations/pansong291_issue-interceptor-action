@@ -37,6 +37,7 @@ Intercept issues and comments based on regex matching.
 ## Example usage
 
 ### close and lock issue when the content match the regex expression
+* The `on` condition is `issues`.
 ```yaml
 name: Lock Issue
 
@@ -59,6 +60,7 @@ jobs:
 ```
 
 ### delete comment when the content match the regex expression
+* The `on` condition is `issue_comment`.
 ```yaml
 name: Delete Comment
 
@@ -78,6 +80,7 @@ jobs:
 ```
 
 ### both
+* The `on` condition is `issues` and `issue_comment`.
 ```yaml
 name: Lock Issue And Delete Comment
 
@@ -86,6 +89,52 @@ on:
     types: [opened, edited, reopened]
   issue_comment:
     types: [created, edited]
+
+jobs:
+  lock-and-delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: lock issue and delete comment
+        uses: pansong291/issue-interceptor-action@v1.0
+        with:
+          test-regex: '/shite/i'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title-override: 'f*ck you'
+          body-override: 'b*tch'
+          lock-reason: 'spam'
+```
+### check all issues and all comments by manually
+* The `on` condition is `workflow_dispatch`.
+```yaml
+name: Lock Issue And Delete Comment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  lock-and-delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: lock issue and delete comment
+        uses: pansong291/issue-interceptor-action@v1.0
+        with:
+          test-regex: '/shite/i'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title-override: 'f*ck you'
+          body-override: 'b*tch'
+          lock-reason: 'spam'
+```
+### all of them
+* The `on` condition is `issues` and `issue_comment` and `workflow_dispatch`.
+```yaml
+name: Lock Issue And Delete Comment
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created, edited]
+  workflow_dispatch:
 
 jobs:
   lock-and-delete:
