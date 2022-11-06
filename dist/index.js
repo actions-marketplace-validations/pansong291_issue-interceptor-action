@@ -12486,7 +12486,7 @@ class AbstractInterceptor {
             this.octokit = new rest_1.Octokit({ auth: `token ${token}` });
         }
         catch (e) {
-            core.setFailed(e.message);
+            core.setFailed(e);
             throw e;
         }
     }
@@ -12709,7 +12709,7 @@ function run() {
             core.info(`\nInterceptor '${interceptor.eventName}' Done.`);
         }
         catch (err) {
-            core.setFailed(err.message);
+            core.setFailed(err);
         }
     });
 }

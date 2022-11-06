@@ -8,7 +8,7 @@ async function run() {
     await interceptor.intercept()
     core.info(`\nInterceptor '${interceptor.eventName}' Done.`)
   } catch (err: any) {
-    core.setFailed(err.message)
+    core.setFailed(err)
   }
 }
 

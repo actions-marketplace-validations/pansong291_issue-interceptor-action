@@ -25,7 +25,7 @@ export default abstract class AbstractInterceptor implements GithubEventIntercep
       const token = core.getInput(Inputs.token)
       this.octokit = new Octokit({ auth: `token ${token}` })
     } catch (e: any) {
-      core.setFailed(e.message)
+      core.setFailed(e)
       throw e
     }
   }
