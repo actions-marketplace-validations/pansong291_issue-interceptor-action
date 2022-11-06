@@ -21,8 +21,7 @@ class workflowDispatchInterceptor extends AbstractInterceptor {
          * You can identify pull requests by the pull_request key.
          */
         if (!elem.pull_request) {
-          const context = this.newContext(elem)
-          await this.checkIssue(context, elem)
+          await this.checkIssue(this.newContext(elem), elem)
         } else {
           core.info(`ignore pull requests #${elem.number}`)
         }
@@ -38,8 +37,7 @@ class workflowDispatchInterceptor extends AbstractInterceptor {
         { issue_number },
         (params) => this.octokit.issues.listComments(params),
         async (elem) => {
-          const context = this.newContext(issue, elem)
-          await this.checkComment(context)
+          await this.checkComment(this.newContext(issue, elem))
         }
       )
     }
@@ -64,6 +62,7 @@ class workflowDispatchInterceptor extends AbstractInterceptor {
             core.warning(e)
           }
         }
+        if (data.length < _params.per_page) break
       } else {
         break
       }

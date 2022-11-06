@@ -12721,8 +12721,7 @@ class workflowDispatchInterceptor extends abstract_interceptor_1.default {
                  * You can identify pull requests by the pull_request key.
                  */
                 if (!elem.pull_request) {
-                    const context = this.newContext(elem);
-                    yield this.checkIssue(context, elem);
+                    yield this.checkIssue(this.newContext(elem), elem);
                 }
                 else {
                     core.info(`ignore pull requests #${elem.number}`);
@@ -12736,8 +12735,7 @@ class workflowDispatchInterceptor extends abstract_interceptor_1.default {
             if (issue_number) {
                 core.info(`start to get all comments by issue#${issue_number}`);
                 yield this.forEachElem({ issue_number }, (params) => this.octokit.issues.listComments(params), (elem) => __awaiter(this, void 0, void 0, function* () {
-                    const context = this.newContext(issue, elem);
-                    yield this.checkComment(context);
+                    yield this.checkComment(this.newContext(issue, elem));
                 }));
             }
             issue_interceptor_1.default.init(context);
@@ -12763,6 +12761,8 @@ class workflowDispatchInterceptor extends abstract_interceptor_1.default {
                             core.warning(e);
                         }
                     }
+                    if (data.length < _params.per_page)
+                        break;
                 }
                 else {
                     break;
