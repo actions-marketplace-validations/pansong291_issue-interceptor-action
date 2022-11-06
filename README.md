@@ -31,6 +31,7 @@ You can use it to close/lock issues and delete comments.
 ### `lock-reason`
 
 * **_Default_** `spam`
+* **_Options_** One of `off-topic`, `too heated`, `resolved`, `spam`
 * The reason for locking the issue conversation.
 
 ## Outputs
