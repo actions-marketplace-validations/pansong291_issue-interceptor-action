@@ -10,6 +10,8 @@ jobs:
   lock-issue:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@main
       - name: lock issue and delete comment
         uses: ./
         with:
