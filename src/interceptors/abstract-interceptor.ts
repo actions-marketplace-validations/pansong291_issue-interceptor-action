@@ -18,7 +18,7 @@ export default abstract class AbstractInterceptor implements GithubEventIntercep
     try {
       const regex = core.getInput(Inputs.test_regex)
       if (!regex || !regex.trim()) throw `${Inputs.test_regex} is required`
-      const match = regex.match(/\/(.+)\/(\w+)?/)
+      const match = regex.match(/^\/(.+)\/([igmsuUxyDAXJ]*)$/)
       if (!match || !match.length) throw `${Inputs.test_regex} is illegal, it should be like /regex/i`
       const pattern = match[1]
       const flags = match[2]
