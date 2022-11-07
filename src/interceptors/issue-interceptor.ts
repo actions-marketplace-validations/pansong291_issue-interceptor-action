@@ -8,6 +8,7 @@ class IssueInterceptor extends AbstractInterceptor {
 
   public async intercept() {
     if (this.checkIssue()) {
+      core.info(`matched issue:\n[number] ${this.issue_number}\n[title] ${this.getIssueTitle()}\n[body] ${this.getIssueBody()}`)
       assertNotEmpty(this.owner, this.repo, this.issue_number)
       await this.updateIssue()
       await this.lockIssue()
@@ -18,11 +19,11 @@ class IssueInterceptor extends AbstractInterceptor {
 
   private checkIssue() {
     core.info(`checking ${this.getIssue()}...`)
-    const title = this.payload?.issue?.title
+    const title = this.getIssueTitle()
     if (title && this.testRegex.test(title)) {
       return true
     }
-    const body = this.payload?.issue?.body
+    const body = this.getIssueBody()
     return !!(body && this.testRegex.test(body))
   }
 

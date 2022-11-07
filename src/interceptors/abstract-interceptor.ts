@@ -31,12 +31,24 @@ export default abstract class AbstractInterceptor implements GithubEventIntercep
     }
   }
 
-  getIssue(): string {
+  protected getIssue(): string {
     return `issue#${this.issue_number}`
   }
 
-  getComment(): string {
-    return this.getIssue() + `.comment#${this.comment_id}`
+  protected getComment(): string {
+    return this.getIssue() + `/comment#${this.comment_id}`
+  }
+
+  protected getIssueTitle() {
+    return this.payload?.issue?.title
+  }
+
+  protected getIssueBody() {
+    return this.payload?.issue?.body
+  }
+
+  protected getCommentBody() {
+    return this.payload?.comment?.body
   }
 
   init(context: Context): void {
@@ -45,7 +57,7 @@ export default abstract class AbstractInterceptor implements GithubEventIntercep
     this.repo = context.repo?.repo || context.payload?.repository?.name
     this.issue_number = context.issue?.number || context.payload?.issue?.number
     this.comment_id = context.payload?.comment?.id
-    core.info(`[init ${this.eventName}] owner: ${this.owner}, repo: ${this.repo}`)
+    core.debug(`[init ${this.eventName}] owner: ${this.owner}, repo: ${this.repo}`)
   }
 
   abstract eventName: string

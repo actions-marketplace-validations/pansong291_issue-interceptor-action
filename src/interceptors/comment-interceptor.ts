@@ -7,6 +7,7 @@ class CommentInterceptor extends AbstractInterceptor {
 
   public async intercept() {
     if (this.checkComment()) {
+      core.info(`matched comment:\n[id] ${this.comment_id}\n[body] ${this.getCommentBody()}`)
       assertNotEmpty(this.owner, this.repo, this.comment_id)
       await this.deleteComment()
     } else {
@@ -16,7 +17,7 @@ class CommentInterceptor extends AbstractInterceptor {
 
   private checkComment() {
     core.info(`checking ${this.getComment()}...`)
-    const body = this.payload?.comment?.body
+    const body = this.getCommentBody()
     return !!(body && this.testRegex.test(body))
   }
 
