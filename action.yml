@@ -16,10 +16,13 @@ inputs:
     default: ${{ github.token }}
   title-override:
     description: 'Reset the title of the issue.'
+    default: 'xxx'
   body-override:
     description: 'Reset the body of the issue or comment.'
+    default: 'xxx'
   lock-reason:
     description: 'The reason for locking the issue conversation.'
+    default: 'spam'
 runs:
   using: 'node16'
   main: 'dist/index.js'
