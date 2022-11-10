@@ -11,7 +11,7 @@ You can use it to close/lock issues and delete comments.
 * **_Required_**
 * **_Example_** `"/foo|bar/i"` `"/\btest\.com\b/i"` `${{ secrets.REGEX_ISSUE_INTERCEPTOR }}`
 * The regex expression to test title or body of the issue or comment.
-* The flags of regex are supported `g` `i` `m` `u` `y`.
+* These flags of regex are supported: `g` `i` `m` `u` `y`.
 * You can keep it in a secret then other bodies don't know what it is.
 
 ### `token`
